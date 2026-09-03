@@ -6,7 +6,7 @@ import telebot
 from telebot.types import ReplyKeyboardMarkup, KeyboardButton
 from PIL import Image, ImageDraw
 
-API_TOKEN = '8931167419:AAGZYUQOtTeTDoRGBKdiJYwhmZG0R0Egrdw'
+API_TOKEN = '8931167419:AAGYI3lt_5psV-fGRWfA5DiAjyGUViXMr3Y'
 bot = telebot.TeleBot(API_TOKEN)
 
 ADMIN_ID = 8057979160
