@@ -7,7 +7,8 @@ import telebot
 from telebot.types import ReplyKeyboardMarkup, KeyboardButton
 from PIL import Image, ImageDraw
 
-API_TOKEN = '8931167419:AAGZYUQOtTeTDoRGBKdiJYwhmZG0R0Egrdw'
+# updated token
+API_TOKEN = '8931167419:AAGYI3lt_5psV-fGRWfA5DiAjyGUViXMr3Y'
 bot = telebot.TeleBot(API_TOKEN)
 
 ADMIN_ID = 8057979160
@@ -76,19 +77,23 @@ def generate_chart_card(asset, signal, confidence, entry_price, entry_time, payo
     bio.seek(0)
     return bio
 
-@bot.message_handler(commands=['start'])
-def start_cmd(message):
+def send_otc_keyboard(chat_id):
     markup = ReplyKeyboardMarkup(row_width=2, resize_keyboard=True)
     buttons = [KeyboardButton(pair) for pair in OTC_PAIRS]
     markup.add(*buttons)
-    bot.send_message(message.chat.id, "👋 MHT VIP BOT-এ স্বাগতম!\n\nনিচের ওটিসি (OTC) মার্কেট সিলেক্ট করুন:", reply_markup=markup, parse_mode="Markdown")
+    bot.send_message(chat_id, "📊 ওটিসি (OTC) মার্কেট সিলেক্ট করুন:", reply_markup=markup, parse_mode="Markdown")
+
+@bot.message_handler(commands=['start'])
+def start_cmd(message):
+    send_otc_keyboard(message.chat.id)
 
 @bot.message_handler(commands=['on', 'off'])
 def toggle_bot(message):
     global bot_active
     if message.from_user.id != ADMIN_ID:
         bot.reply_to(message, "❌ অনুমতি নেই।")
-        returnbot_active = (message.text == '/on')
+        return
+ bot_active = (message.text == '/on')
     status_msg = "🟢 বট অন করা হয়েছে।" if bot_active else "🔴 বট অফ করা হয়েছে।"
     bot.reply_to(message, status_msg)
 
@@ -105,24 +110,29 @@ def handle_all_messages(message):
         bot.reply_to(message, "⚠️ বর্তমানে সিগন্যাল সার্ভিস বন্ধ আছে।")
         return
 
-    pair_name = message.text.strip()
-    if pair_name not in OTC_PAIRS:
+    text = message.text.strip()
+
+    if text in ["OTC Market", "OTC Markets", "Real Market"]:
+        send_otc_keyboard(message.chat.id)
+        return
+
+    if text not in OTC_PAIRS:
         return
 
     now = datetime.now()
     next_candle_time = (now + timedelta(minutes=1)).replace(second=0, microsecond=0)
     entry_time_str = next_candle_time.strftime("%H:%M")
 
-    payout = get_live_market_payout(pair_name)
+    payout = get_live_market_payout(text)
     signal_type = random.choice(["CALL", "PUT"])
     confidence = random.randint(88, 98)
     entry_price = f"{random.uniform(100.0, 1500.0):.2f}"
 
-    chart_image = generate_chart_card(pair_name, signal_type, confidence, entry_price, entry_time_str, payout)
+    chart_image = generate_chart_card(text, signal_type, confidence, entry_price, entry_time_str, payout)
 
     caption_text = (
         f"❖MHT PREMIUM HACK❖\n\n"
-        f"📌Asset: {pair_name} ({payout}% Profit)\n"
+        f"📌Asset: {text} ({payout}% Profit)\n"
         f"📌Signal: {signal_type}\n"
         f"📌Confidence: {confidence}%\n"
         f"📌Entry Time: {entry_time_str} (Next Candle)\n"
@@ -134,8 +144,8 @@ def handle_all_messages(message):
 
     threading.Thread(
         target=process_candle_result,
-        args=(message.chat.id, pair_name, signal_type),
+        args=(message.chat.id, text, signal_type),
         daemon=True
     ).start()
 
-bot.infinity_polling()
+bot.infinity_polling()       
