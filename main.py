@@ -6,7 +6,7 @@ import io
 
 import telebot
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton, ReplyKeyboardMarkup, KeyboardButton
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw
 
 # ==================== CONFIGURATION ====================
 API_TOKEN = '8931167419:AAGYI3lt_5psV-fGRWfA5DiAjyGUViXMr3Y'
@@ -131,8 +131,10 @@ def send_auto_signal_cycle(chat_id, pair_name, payout):
     if not user_auto_signals.get(chat_id, False):
         return
 
-    # Direct UTC + 6 hours addition for Bangladesh Standard Time
+    # 1. Bangladesh Time Calculation (UTC + 6 Hours)
     bd_time = datetime.utcnow() + timedelta(hours=6)
+    
+    # Next Candle Entry Time (e.g., if now is 16:05:40, next candle starts at 16:06)
     next_candle = (bd_time + timedelta(minutes=1)).replace(second=0, microsecond=0)
     time_str = next_candle.strftime("%H:%M")
 
@@ -153,8 +155,13 @@ def send_auto_signal_cycle(chat_id, pair_name, payout):
 
     bot.send_photo(chat_id, photo=card_img, caption=caption, parse_mode="Markdown")
 
-    # Waiting 60 seconds for candle finish
-    time.sleep(60)
+    # 2. Precise Waiting Logic (Wait until candle officially ends)
+    candle_end_time = next_candle + timedelta(minutes=1)
+    current_bd_time = datetime.utcnow() + timedelta(hours=6)
+    wait_seconds = (candle_end_time - current_bd_time).total_seconds()
+
+    if wait_seconds > 0:
+        time.sleep(wait_seconds)
 
     if user_auto_signals.get(chat_id, False):
         res_type = random.choice(["DIRECT_WIN", "DIRECT_WIN", "LOSS", "MTG_WIN"])
@@ -192,7 +199,7 @@ def send_auto_signal_cycle(chat_id, pair_name, payout):
             parse_mode="Markdown"
         )
 
-        # Loop for next signal if auto signal is active
+        # Trigger next signal cycle if auto signal is active
         threading.Thread(target=send_auto_signal_cycle, args=(chat_id, pair_name, payout), daemon=True).start()
 
 @bot.message_handler(func=lambda message: True)
