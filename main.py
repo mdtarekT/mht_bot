@@ -7,7 +7,7 @@ import telebot
 from telebot.types import ReplyKeyboardMarkup, KeyboardButton
 from PIL import Image, ImageDraw
 
-# updated token
+# Updated Token
 API_TOKEN = '8931167419:AAGYI3lt_5psV-fGRWfA5DiAjyGUViXMr3Y'
 bot = telebot.TeleBot(API_TOKEN)
 
@@ -93,7 +93,7 @@ def toggle_bot(message):
     if message.from_user.id != ADMIN_ID:
         bot.reply_to(message, "❌ অনুমতি নেই।")
         return
- bot_active = (message.text == '/on')
+    bot_active = (message.text == '/on')
     status_msg = "🟢 বট অন করা হয়েছে।" if bot_active else "🔴 বট অফ করা হয়েছে।"
     bot.reply_to(message, status_msg)
 
@@ -148,4 +148,4 @@ def handle_all_messages(message):
         daemon=True
     ).start()
 
-bot.infinity_polling()       
+bot.infinity_polling()
