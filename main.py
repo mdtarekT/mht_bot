@@ -88,8 +88,7 @@ def toggle_bot(message):
     global bot_active
     if message.from_user.id != ADMIN_ID:
         bot.reply_to(message, "❌ অনুমতি নেই।")
-        return
-      bot_active = (message.text == '/on')
+        returnbot_active = (message.text == '/on')
     status_msg = "🟢 বট অন করা হয়েছে।" if bot_active else "🔴 বট অফ করা হয়েছে।"
     bot.reply_to(message, status_msg)
 
@@ -139,4 +138,4 @@ def handle_all_messages(message):
         daemon=True
     ).start()
 
-bot.infinity_polling()  
+bot.infinity_polling()
