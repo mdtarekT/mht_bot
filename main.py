@@ -2,6 +2,7 @@ import time
 import random
 import threading
 from datetime import datetime, timedelta
+import pytz
 import io
 
 import telebot
@@ -131,7 +132,9 @@ def send_auto_signal_cycle(chat_id, pair_name, payout):
     if not user_auto_signals.get(chat_id, False):
         return
 
-    now = datetime.now()
+    # Bangladesh Timezone
+    bd_tz = pytz.timezone('Asia/Dhaka')
+    now = datetime.now(bd_tz)
     next_candle = (now + timedelta(minutes=1)).replace(second=0, microsecond=0)
     time_str = next_candle.strftime("%H:%M")
 
@@ -156,7 +159,6 @@ def send_auto_signal_cycle(chat_id, pair_name, payout):
     time.sleep(60)
 
     if user_auto_signals.get(chat_id, False):
-        # Win / Loss Simulation
         res_type = random.choice(["DIRECT_WIN", "DIRECT_WIN", "LOSS", "MTG_WIN"])
         
         if res_type == "DIRECT_WIN":
