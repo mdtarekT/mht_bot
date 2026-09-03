@@ -66,7 +66,7 @@ def send_auto_signal_cycle(chat_id, pair_display, pair_symbol, payout):
             f"⚡ **Strength:** {strength}\n"
             f"⏰ **Time:** {entry_time_str} (1 MIN Candle)\n"
             f"🎯 **MTG:** 1 Step\n\n"
-            f"👤 **Owner:** {OWNER_USERNAME}"
+            f"👤 **Owner:** {mhtbd99}"
         )
         bot.send_message(chat_id, caption, parse_mode="Markdown")
 
