@@ -13,7 +13,6 @@ bot = telebot.TeleBot(API_TOKEN)
 ADMIN_ID = 8057979160
 bot_active = True
 
-# আপনার সরবরাহকৃত লাইভ সেশন কোড
 LARAVEL_SESSION = "eyJpdiI6InpRK2hDdStGSTVLZXRYdi9RZHFLL0E9PSIsInZhbHVlIjoiMGNmdENWZUM4bFJtTHpZUzcxanZZdEhINmFqcjdpeVBBSnFleU9NTnFtODRQcENHWmJwOFpnaVpMT0d0YmN4ajRjdVpuUGpQY2lJaW1vR3Z2MlhZdkNGQkUrb3Vnc0VvVEhJZE5JMXg3ejMvenJubnkvcVMzVUFBZ0tIQ2lNeVYiLCJtYWMiOiI3MGE0NzIwOGEyMmI1ZTI3ZDc0ZTY2Njg3NWM4NWQ0YmNiYjU3OWQ4MTJjZGFhYTM2NzdjNTMxY2E2MGNkMTNmIiwidGFnIjoiIn0%3D"
 
 OTC_PAIRS = [
@@ -90,7 +89,7 @@ def toggle_bot(message):
     if message.from_user.id != ADMIN_ID:
         bot.reply_to(message, "❌ অনুমতি নেই।")
         return
-       bot_active = (message.text == '/on')
+      bot_active = (message.text == '/on')
     status_msg = "🟢 বট অন করা হয়েছে।" if bot_active else "🔴 বট অফ করা হয়েছে।"
     bot.reply_to(message, status_msg)
 
@@ -140,4 +139,4 @@ def handle_all_messages(message):
         daemon=True
     ).start()
 
-bot.infinity_polling() 
+bot.infinity_polling()  
