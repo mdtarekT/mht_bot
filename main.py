@@ -1,10 +1,12 @@
-f"👋 Welcome to {BOT_NAME}\n\n"
+@bot.message_handler(commands=['start'])
+def start_cmd(message):
+    welcome_msg = (
+        f"👋 Welcome to {BOT_NAME}\n\n"
         f"📌 Broker: Quotex\n"
         f"👤 Owner: {OWNER_USERNAME}\n\n"
         f"নিচের মেনু থেকে আপনার কাঙ্ক্ষিত অপশন সিলেক্ট করুন:"
     )
     bot.send_message(message.chat.id, welcome_msg, reply_markup=get_main_menu_markup(), parse_mode="Markdown")
-
 @bot.callback_query_handler(func=lambda call: True)
 def handle_callbacks(call):
     if call.data in ["btn_single", "btn_auto"]:
