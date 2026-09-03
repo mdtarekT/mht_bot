@@ -12,9 +12,9 @@ bot = telebot.TeleBot(API_TOKEN)
 
 ADMIN_ID = 8057979160
 bot_active = True
-''eyJpdiI6InpRK2hDdStGSTVLZXRYdi9RZHFLL0E9PSIsInZhbHVlIjoiMGNmdENWZUM4bFJtTHpZUzcxanZZdEhINmFqcjdpeVBBSnFleU9NTnFtODRQcENHWmJwOFpnaVpMT0d0YmN4ajRjdVpuUGpQY2lJaW1vR3Z2MlhZdkNGQkUrb3Vnc0VvVEhJZE5JMXg3ejMvenJubnkvcVMzVUFBZ0tIQ2lNeVYiLCJtYWMiOiI3MGE0NzIwOGEyMmI1ZTI3ZDc0ZTY2Njg3NWM4NWQ0YmNiYjU3OWQ4MTJjZGFhYTM2NzdjNTMxY2E2MGNkMTNmIiwidGFnIjoiIn0%3D''
-# আপনার কপি করা সেশন কি এখানে বসান
-LARAVEL_SESSION = "YOUR_LARAVEL_SESSION_HERE"
+
+# আপনার সরবরাহকৃত লাইভ সেশন কোড
+LARAVEL_SESSION = "eyJpdiI6InpRK2hDdStGSTVLZXRYdi9RZHFLL0E9PSIsInZhbHVlIjoiMGNmdENWZUM4bFJtTHpZUzcxanZZdEhINmFqcjdpeVBBSnFleU9NTnFtODRQcENHWmJwOFpnaVpMT0d0YmN4ajRjdVpuUGpQY2lJaW1vR3Z2MlhZdkNGQkUrb3Vnc0VvVEhJZE5JMXg3ejMvenJubnkvcVMzVUFBZ0tIQ2lNeVYiLCJtYWMiOiI3MGE0NzIwOGEyMmI1ZTI3ZDc0ZTY2Njg3NWM4NWQ0YmNiYjU3OWQ4MTJjZGFhYTM2NzdjNTMxY2E2MGNkMTNmIiwidGFnIjoiIn0%3D"
 
 OTC_PAIRS = [
     "USD/EGP (OTC)", "GBP/NZD (OTC)", "USD/BDT (OTC)", "USD/NGN (OTC)", 
@@ -31,13 +31,11 @@ OTC_PAIRS = [
 ]
 
 def get_live_market_payout(pair_name):
-    """কোটেক্স সেশন দিয়ে লাইভ মার্কেটের সঠিক পার্সেন্টেজ ফেস করার ফাংশন"""
     try:
         headers = {
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
             'Cookie': f'laravel_session={LARAVEL_SESSION}'
         }
-        # প্ল্যাটফর্মের লাইভ ডেটা এন্ডপয়েন্ট
         response = requests.get('https://market-quantinfo.net/api/v1/payouts', headers=headers, timeout=3)
         if response.status_code == 200:
             data = response.json()
@@ -92,11 +90,11 @@ def toggle_bot(message):
     if message.from_user.id != ADMIN_ID:
         bot.reply_to(message, "❌ অনুমতি নেই।")
         return
-
-    bot_active = (message.text == '/on')
+       bot_active = (message.text == '/on')
     status_msg = "🟢 বট অন করা হয়েছে।" if bot_active else "🔴 বট অফ করা হয়েছে।"
     bot.reply_to(message, status_msg)
-   def process_candle_result(chat_id, pair_name, signal_type):
+
+def process_candle_result(chat_id, pair_name, signal_type):
     time.sleep(60)
     result = random.choice(["WIN ✅", "WIN ✅", "WIN ✅", "REFUND 🔄"])
     bot.send_message(chat_id, f"📊 REAL-TIME RESULT\nPair: {pair_name}\nSignal: {signal_type}\nResult: {result}")
